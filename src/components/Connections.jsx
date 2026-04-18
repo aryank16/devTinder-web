@@ -1,9 +1,10 @@
 
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../utils/connectionSlice";
+import { Link } from "react-router-dom";
 
 const Connections = () => {
 
@@ -12,7 +13,7 @@ const Connections = () => {
 
   console.log("Redux connections:", connections);
 
-  const fetchConnections = async () => {
+  const fetchConnections = useCallback(async () => {
     try {
       const res = await axios.get(BASE_URL + "/user/connections", {
         withCredentials: true,
@@ -22,11 +23,11 @@ const Connections = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchConnections();
-  }, []);
+  }, [fetchConnections]);
 
   if (!connections) return <h1>Loading...</h1>;
 
@@ -39,10 +40,10 @@ const Connections = () => {
 
       {connections.map((connection) => {
 
-        const {firstName,lastName,photoUrl, age, gender,about} = connection
+        const {_id,firstName,lastName,photoUrl, age, gender,about} = connection
 
         return (
-        <div className="flex m-4 p-4   rounded-lg bg-base-300  w-1/2 mx-auto">
+        <div key={_id} className="flex m-4 p-4   rounded-lg bg-base-300  w-1/2 mx-auto">
           <img className="w-20 h-20" alt="photo" src={photoUrl}/>
 
           <div className="text-left mx-4">
@@ -50,7 +51,16 @@ const Connections = () => {
           <h1>{age}</h1>
           <h1>{gender}</h1>
           <p>{about}</p>
+         
+ 
+
+
           </div>
+          <Link
+           to={'/chat/'+ _id}>
+
+           <button className="btn btn-primary">Chat</button>
+           </Link>
         </div>
         )
 })}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import NavBar from './NavBar'
 import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -13,40 +13,27 @@ const Body = () => {
   const user = useSelector((store) => store.user);
   
 
-  const fetchUser = async() =>{
-
+  const fetchUser = useCallback(async () => {
     try {
-
-      const res = await axios.get(BASE_URL+ '/profile/view',
-        {withCredentials:true},
-      );
+      const res = await axios.get(BASE_URL + '/profile/view', {
+        withCredentials: true,
+      })
 
       dispatch(addUser(res.data))
-      
     } catch (error) {
-    
-       if (error.status=== 401) {
+      if (error.status === 401) {
         navigate('/login')
-        
-       }
-       
-         
-      
-      
+      }
 
       console.error(error)
-      
     }
-  }
+  }, [dispatch, navigate])
 
-  useEffect(()=>{
-    if(!user){
-
+  useEffect(() => {
+    if (!user) {
       fetchUser()
-
     }
-    
-  },[])
+  }, [user, fetchUser])
 
   return (
     <div>

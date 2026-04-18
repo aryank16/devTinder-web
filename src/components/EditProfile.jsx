@@ -41,7 +41,7 @@ const EditProfile = ({user}) => {
 
             
         } catch (error) {
-            console.Error(error)
+            console.error(error)
             
         }
 

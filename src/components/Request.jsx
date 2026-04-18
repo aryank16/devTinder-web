@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { BASE_URL } from '../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { addRequest } from '../utils/requestSlice'
@@ -11,28 +11,22 @@ const Request = () => {
     
   console.log(requests);
 
-    const fetchRequest = async ()=>{
-
+    const fetchRequest = useCallback(async () => {
         try {
-
              const res = await axios.get(BASE_URL+ '/user/requests/received',
             {withCredentials:true}
         )
 
         dispatch(addRequest(res.data.data))
-
-      
-
-            
         } catch (error) {
             console.error(error)
         }
-    } 
+    }, [dispatch])
 
 
      useEffect(()=>{
             fetchRequest()
-        },[])
+        },[fetchRequest])
 
  if (!requests) return <h1>Loading...</h1>;
 
